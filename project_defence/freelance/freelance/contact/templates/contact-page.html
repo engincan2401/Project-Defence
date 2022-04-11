@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    About
+{% endblock %}
+
+{% block content %}
+    <div class="ps-4 w-75 container d-flex align-items-center justify-content-center">
+        <div>
+            <div class="pt-3">
+                <h3>{{ object.title }}</h3>
+                <p class="fs-4 text lh-sm">{{ object.content }}</p>
+            </div>
+            <div class="pt-5">
+                {% include 'components/feedback-form.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

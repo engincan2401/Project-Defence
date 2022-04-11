@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block script %}
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+    {{ profile.first_name }} {{ profile.last_name }}
+{% endblock %}
+
+{% load ratings %}
+
+{% block content %}
+    <div>
+        <div class="ps-5 pt-5 row">
+            <div class="col">
+            <span class="d-flex justify-content-start">
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}"
+                         class="rounded-circle" style="width: 150px; height: 150px">
+                {% else %}
+                    <img src="{% static 'icons/user-icon.jpg' %}" class="rounded-circle"
+                         style="width: 200px; height: 200px">
+                {% endif %}
+                <span class="ps-2">
+                    <h3>{{ profile.first_name }} {{ profile.last_name }}</h3>
+                    <h4>Last seen: {{ user.last_activity|date:'d.m.Y, l H:i' }}</h4>
+                    {% if is_owner %}
+                        {% if user.user_choice == '1' %}
+                            <a type="button" class="btn btn-danger" href="{% url 'edit freelancer profile' user.pk %}">Edit Profile</a>
+                        {% else %}
+                            <a type="button" class="btn btn-danger" href="{% url 'edit employer profile' user.pk %}">Edit Profile</a>
+                            <a href="{% url 'create job' %}" class="btn btn-warning">Create Job</a>
+                        {% endif %}
+                    {% endif %}
+                </span>
+            </span>
+            </div>
+            <div class="col">
+                {% if user.user_choice == '1' %}
+                    {% ratings object %}
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="ps-3 pt-3">
+            <div class="w-25">
+                {% if user.user_choice == '2' %}
+                    <h4>Jobs</h4>
+                    <hr>
+                    {% for job in jobs %}
+                        <div class="ps-3 d-flex align-items-start flex-column bd-highlight mb-3">
+                            <a class="fs-5 text-decoration-none link-dark"
+                               href="{% url 'job details' job.slug %}">{{ job.title|capfirst }}</a>
+                            <div class="d-flex flex-row bd-highlight">
+                                <p class="pe-2 bd-highlight opacity-50">{{ job.created_at|date:'d.m.Y' }}</p>
+                                <p class="align-self-center badge bg-secondary bd-highlight">{{ job.get_type_display }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% else %}
+                    <div>
+                        {% if profile.category %}
+                            <h5>{{ profile.category }}</h5>
+                        {% endif %}
+                        {% if profile.sub_category %}
+                            <h6>{{ profile.sub_category }}</h6>
+                        {% endif %}
+                    </div>
+
+                {% endif %}
+            </div>
+            <div class="w-75 float-end">
+                <div>
+                    <span class="d-flex justify-content-between">
+                        {% if profile.programming_language %}
+                            <h4>{{ profile.programming_language }}</h4>
+                        {% endif %}
+                        {% if profile.hourly_rate %}
+                            <h4>${{ profile.hourly_rate }}/h</h4>
+                        {% endif %}
+                    </span>
+                    {% if profile.description %}
+                    <p class="w-75 fs-3 lh-base">{{ profile.description }}</p>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

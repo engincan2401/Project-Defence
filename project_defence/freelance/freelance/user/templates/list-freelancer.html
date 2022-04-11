@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Find Freelancer
+{% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <h2>Category</h2>
+    <div class="p-2 d-flex justify-content-start">
+        {% for category in categories %}
+            <div class="d-flex align-items-center justify-content-center rounded-circle"
+                 style="width: 200px;height: 200px;background-color: #198754">
+                <a class="link-light" href="{% url 'freelancer with category' category.id %}">{{ category.title }}</a>
+            </div>
+        {% endfor %}
+    </div>
+    <hr>
+    <div class="container-fluid">
+        <form method="get" class="d-flex">
+            <input class="form-control me-2" name="search" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    {% for user in object_list %}
+        <div class="p-3" style="float: left;width: 300px;justify-content: space-between">
+            <div class="p-3 text-center border border-success border-2">
+                {% if user.hourly_rate %}
+                    <h4 class="text-end">${{ user.hourly_rate }}/h</h4>
+                {% endif %}
+                {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}"
+                         class="rounded-circle" style="width: 200px; height: 200px">
+                {% else %}
+                    <img src="{% static 'icons/user-icon.jpg' %}" class="rounded-circle"
+                         style="width: 200px; height: 200px">
+                {% endif %}
+                <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                {% if user.category %}
+                    <h5>{{ user.category }}</h5>
+                {% endif %}
+                {% if user.sub_category %}
+                    <h6>{{ user.sub_category }}</h6>
+                {% endif %}
+                <div>
+                    <img src="{% static 'icons/icons-star.png' %}">
+                    {% for rating in ratings %}
+                        {% if rating.object_id == user.pk %}
+                            <a>{{ rating.average|stringformat:".1f" }}/5</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <a class="btn btn-success rounded-pill" href="{% url 'profile details' user.pk %}" role="button">See More</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

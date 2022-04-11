@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ category_name }}
+{% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <div class="pt-3 ps-3 w-100 row">
+        <div class="w-25">
+            <h4>Filter</h4>
+            <hr>
+            <form method="get">
+                {% for sub in sub_category %}
+                    <div class="ps-3 d-flex align-items-start flex-column bd-highlight mb-3">
+                        <label for="{{ sub.title }}">{{ sub.title }}: </label>
+                        <input id="{{ sub.pk }}" type="checkbox" name="filter" value="{{ sub.id }}">
+                    </div>
+                {% endfor %}
+                <input class="btn btn-success" type="submit" value="filter">
+            </form>
+        </div>
+
+
+        <div class="w-75">
+            <h4>{{ category_name }} - Freelancer</h4>
+            <div class="container-fluid">
+                <form method="get" class="d-flex">
+                    <input class="form-control me-2" name="search" type="search" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+            {% for user in object_list %}
+                <div class="p-3" style="float: left;width: 300px;justify-content: space-between">
+                    <div class="p-3 text-center border border-success border-2">
+                        {% if user.hourly_rate %}
+                            <h4 class="text-end">${{ user.hourly_rate }}/h</h4>
+                        {% endif %}
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}"
+                                 class="rounded-circle" style="width: 200px; height: 200px">
+                        {% else %}
+                            <img src="{% static 'icons/user-icon.jpg' %}" class="rounded-circle"
+                                 style="width: 200px; height: 200px">
+                        {% endif %}
+                        <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                        {% if user.category %}
+                            <h5>{{ user.category }}</h5>
+                        {% endif %}
+                        {% if user.sub_category %}
+                            <h6>{{ user.sub_category }}</h6>
+                        {% endif %}
+                        <div>
+                            <img src="{% static 'icons/icons-star.png' %}">
+                            {% for rating in ratings %}
+                                {% if rating.object_id == user.pk %}
+                                    <a>{{ rating.average|stringformat:".1f" }}/5</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <a class="btn btn-success rounded-pill" href="{% url 'profile details' user.pk %}"
+                           role="button">See More</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

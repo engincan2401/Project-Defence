@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Jobs
+{% endblock %}
+
+{% block content %}
+    <div class="pt-3 ps-3 w-100 row">
+        <div class="w-25">
+            <h4>Filter</h4>
+            <hr>
+            <form action="{% url 'jobs' %}" method="get">
+                {% for category in categories %}
+                    <div class="ps-3 d-flex align-items-start flex-column bd-highlight mb-3">
+                        <label for="{{ category.title }}">{{ category.title }}: </label>
+                        <input id="{{ category.pk }}" type="checkbox" name="filter" value="{{ category.id }}">
+                    </div>
+                {% endfor %}
+                <input class="btn btn-success" type="submit" value="filter">
+            </form>
+        </div>
+        <div class="w-75">
+            <h4>Jobs</h4>
+            <hr>
+            <div class="p-3 container-fluid">
+                <form method="get" class="d-flex">
+                    <input class="form-control me-2" name="search" type="search" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+            {% for job in jobs %}
+                <div class="ps-3 d-flex align-items-start flex-column bd-highlight mb-3">
+                    <a class="fs-5 text-decoration-none link-dark"
+                       href="{% url 'job details' job.slug %}">{{ job.title|capfirst }}</a>
+                    <div class="d-flex flex-row bd-highlight">
+                        <p class="pe-2 bd-highlight opacity-50">{{ job.created_at|date:'d.m.Y' }}</p>
+                        <p class="align-self-center badge bg-secondary bd-highlight">{{ job.get_type_display }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

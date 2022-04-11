@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <div class="p-5">
+        <div class="p-3 container justify-content-center rounded-3 w-75 border">
+            <h1 class="display-4 text-success fw-bold">How work should work!</h1>
+            <p class="lead opacity-75">Forget the old rules. You can have the best people. Right now. Right here.</p>
+            <hr class="my-4">
+            <a class="btn btn-success btn-lg rounded-pill" href="{% url 'jobs' %}" role="button">Find Jobs</a>
+            <a class="btn btn-outline-success btn-lg rounded-pill" href="{% url 'freelancer' %}" role="button">Find
+                Freelancer</a>
+        </div>
+    </div>
+    <h1>Best Freelancer</h1>
+    <div class="d-flex flex-row bd-highlight mb-3">
+        {% for user in best_freelancer %}
+            <div class="p-3" style="width: 300px;">
+                <div class="p-3 text-center border border-success border-2">
+                    {% if user.hourly_rate %}
+                        <h4 class="text-end">${{ user.hourly_rate }}/h</h4>
+                    {% endif %}
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}"
+                             class="rounded-circle" style="width: 200px; height: 200px">
+                    {% else %}
+                        <img src="{% static 'icons/user-icon.jpg' %}" class="rounded-circle"
+                             style="width: 200px; height: 200px">
+                    {% endif %}
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <div>
+                        <img src="{% static 'icons/icons-star.png' %}">
+                        {% for rating in ratings %}
+                            {% if rating.object_id == user.pk %}
+                                <a>{{ rating.average|stringformat:".1f" }}/5</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <a class="btn btn-success rounded-pill" href="{% url 'profile details' user.pk %}" role="button">Виж
+                        повече</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <hr>
+    <h1>Last View Freelancer</h1>
+    {% if last_view_freelancer %}
+        <div class="d-flex flex-row bd-highlight mb-3">
+            {% for last_view in last_view_freelancer %}
+                <div class="p-3" style="width: 300px">
+                    <div class="p-3 text-center border border-success border-2">
+                        {% if last_view.profile_image %}
+                            <img src="{{ last_view.profile_image.url }}"
+                                 class="rounded-circle" style="width: 200px; height: 200px">
+                        {% else %}
+                            <img src="{% static 'icons/user-icon.jpg' %}" class="rounded-circle"
+                                 style="width: 200px; height: 200px">
+                        {% endif %}
+                        <h3>{{ last_view.first_name }} {{ last_view.last_name }}</h3>
+                        <a class="btn btn-success rounded-pill" href="{% url 'profile details' last_view.pk %}"
+                           role="button">Виж
+                            повече</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
